@@ -4,7 +4,7 @@ import { RefObject, useEffect } from "react";
  * targetRef가 가리키는 엘리먼트 바깥을 클릭하면 handler를 호출
  */
 export function useOnClickOutside<T extends HTMLElement>(
-  targetRef: RefObject<T>,
+  targetRef: RefObject<T | null>,
   handler: (event: MouseEvent | TouchEvent) => void,
 ) {
   useEffect(() => {
