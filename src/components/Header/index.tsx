@@ -1,42 +1,27 @@
 import React, { useCallback, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import routerInfo from "@/shared/routing/routerInfo.ts";
-import Menu from "@/assets/menu_button.json";
-import * as styles from "./index.css.ts";
 import { routerInfoType } from "@/shared/types/routing.ts";
-import Lottie, { LottieRefCurrentProps } from "lottie-light-react";
-import { useMediaQuery, useToggle } from "./customHooks.ts";
-
-import { isCurrentPath, useCurrentPage } from "@utils/routerUtils.ts";
+import { isCurrentPath } from "@utils/routerUtils.ts";
+import { useToggle } from "@utils/useToggle.ts";
+import { useMediaQuery } from "@utils/useMediaQuery.ts";
+import { useOnClickOutside } from "@utils/useOnClickOutside.ts";
+import clsx from "clsx";
 
 /**
- * Header 컴포넌트
+ * Header 컴포넌트 (개선된 Tailwind CSS 버전)
  * @component
  * @returns {React.ReactElement} Header 컴포넌트 요소
  */
 const Header: React.FC = () => {
   const [isActive, toggleActive] = useToggle(false);
-  const currentPage = useCurrentPage();
   const location = useLocation();
-  const lottieRef = useRef<LottieRefCurrentProps>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const isDesktop = useMediaQuery("(min-width: 1000px)");
 
   const handleToggle = useCallback(() => {
     toggleActive();
-    if (lottieRef.current) {
-      lottieRef.current.playSegments(isActive ? [60, 120] : [0, 60], true);
-    }
-  }, [isActive, toggleActive]);
-
-  /**
-   * lottie 속도 조절
-   */
-  useEffect(() => {
-    if (lottieRef.current) {
-      lottieRef.current.setSpeed(1.5);
-    }
-  }, []);
+  }, [toggleActive]);
 
   /**
    * 데스크탑에서 페이지 이동 시 메뉴 닫기
@@ -47,70 +32,167 @@ const Header: React.FC = () => {
     }
   }, [isDesktop, isActive, handleToggle]);
 
-  /**
-   * 컴포넌트 외부 클릭 감지
-   */
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        headerRef.current &&
-        !headerRef.current.contains(event.target as Node)
-      ) {
-        if (isActive) {
-          handleToggle();
-        }
-      }
-    };
+  useOnClickOutside(headerRef, () => {
+    if (isActive) {
+      handleToggle();
+    }
+  });
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isActive, handleToggle]);
+  // 스타일 클래스 상수
+  const styles = {
+    header:
+      "fixed top-0 left-0 right-0 z-[1000] backdrop-blur-xl bg-white/70 shadow-[0_4px_24px_rgba(0,0,0,0.06)] border-b border-gray-200/50",
+    container:
+      "flex justify-between items-center px-6 py-3 h-16 lg:px-8 max-lg:px-4",
+    logo: "inline-flex items-center justify-center gap-2 text-gray-900 no-underline h-full",
+    logoText:
+      "font-yeongdo text-xl leading-tight text-center transition-colors hover:text-indigo-600 max-md:text-lg",
+    nav: {
+      desktop: "hidden lg:flex items-center text-base justify-center gap-1",
+      mobile: clsx(
+        "lg:hidden absolute top-full right-0 mt-2 p-3 transition-all duration-300 ease-out",
+        isActive
+          ? "translate-x-0 opacity-100 pointer-events-auto backdrop-blur-xl bg-white/80 rounded-tl-2xl rounded-bl-2xl shadow-[0_8px_32px_rgba(0,0,0,0.12)] border border-gray-200/50"
+          : "translate-x-full opacity-0 pointer-events-none",
+      ),
+    },
+    menuList: {
+      desktop: "flex flex-row items-center gap-1",
+      mobile: "flex flex-col items-end list-none p-0 m-0",
+    },
+    menuItem: {
+      desktop: "",
+      mobile: "my-2 mx-3 text-base",
+    },
+    menuLink: (isCurrent: boolean) =>
+      clsx(
+        "inline-block px-4 py-2 no-underline text-sm font-medium rounded-xl transition-all duration-200",
+        "hover:bg-gray-100/80",
+        isCurrent
+          ? "text-indigo-600 font-semibold bg-indigo-50/80"
+          : "text-gray-700 hover:text-gray-900",
+      ),
+    button: {
+      desktop:
+        "hidden lg:inline-flex items-center gap-1.5 bg-indigo-600 text-white border-0 py-2 px-4 rounded-xl text-sm font-medium transition-all duration-200 hover:bg-indigo-700 hover:shadow-lg hover:shadow-indigo-500/30",
+      mobile:
+        "w-full inline-flex items-center justify-center gap-1.5 bg-indigo-600 text-white border-0 py-2.5 px-4 rounded-xl text-sm font-medium transition-all duration-200 hover:bg-indigo-700",
+    },
+    toggleBtn:
+      "lg:hidden p-2 text-gray-700 hover:text-indigo-600 focus:outline-none transition-colors",
+  };
+
+  const sortedRoutes = routerInfo
+    .filter((item: routerInfoType) => item.expose)
+    .sort((a: routerInfoType, b: routerInfoType) =>
+      a.korean!.localeCompare(b.korean!),
+    );
 
   return (
-    <header ref={headerRef} className={styles.headerStyles}>
-      {/*로고 부분*/}
-      <Link to="/">
-        <h1 className={styles.logoStyles}>Logo</h1>
-      </Link>
+    <header ref={headerRef} className={styles.header}>
+      <div className={styles.container}>
+        {/* 로고 */}
+        <Link to="/" className={styles.logo}>
+          <span className={styles.logoText}>정책나침반</span>
+        </Link>
 
-      {/*현재 페이지 출력 부분*/}
-      <span className={styles.currentPageStyles}>{currentPage.korean}</span>
-
-      {/*토글 버튼 (lottie)*/}
-      <Lottie
-        animationData={Menu}
-        className={styles.toggleBtnStyles}
-        onClick={handleToggle}
-        lottieRef={lottieRef}
-        autoplay={false}
-        loop={false}
-      />
-
-      {/*페이지 메뉴*/}
-      <nav className={styles.menuStyles[isActive ? "active" : "default"]}>
-        <ul className={styles.menuListStyles}>
-          {routerInfo
-            .filter((item: routerInfoType) => item.expose)
-            .sort((a: routerInfoType, b: routerInfoType) =>
-              a.korean!.localeCompare(b.korean!),
-            )
-            .map((item: routerInfoType) => (
-              <li key={item.path} className={styles.menuItemStyles}>
+        {/* 데스크탑 네비게이션 */}
+        <nav className={styles.nav.desktop}>
+          <ul className={styles.menuList.desktop}>
+            {sortedRoutes.map((item: routerInfoType) => (
+              <li key={item.path} className={styles.menuItem.desktop}>
                 <Link
                   to={item.path}
-                  className={
-                    styles.menuItemLinkStyles[
-                      isCurrentPath(item, location) ? "highlight" : "default"
-                    ]
-                  }
-                  onClick={handleToggle}
+                  className={styles.menuLink(isCurrentPath(item, location))}
                 >
                   {item.korean}
                 </Link>
               </li>
             ))}
+          </ul>
+        </nav>
+
+        {/* 데스크탑 버튼 */}
+        <Link to="/showcase">
+          <button className={styles.button.desktop}>
+            로그인
+            <svg
+              fill="none"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              className="w-4 h-4"
+              viewBox="0 0 24 24"
+            >
+              <path d="M5 12h14M12 5l7 7-7 7"></path>
+            </svg>
+          </button>
+        </Link>
+
+        {/* 모바일 햄버거 메뉴 버튼 */}
+        <button
+          onClick={handleToggle}
+          className={styles.toggleBtn}
+          aria-label="Toggle menu"
+        >
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            {isActive ? (
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
+            ) : (
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 6h16M4 12h16M4 18h16"
+              />
+            )}
+          </svg>
+        </button>
+      </div>
+
+      {/* 모바일 메뉴 */}
+      <nav className={styles.nav.mobile}>
+        <ul className={styles.menuList.mobile}>
+          {sortedRoutes.map((item: routerInfoType) => (
+            <li key={item.path} className={styles.menuItem.mobile}>
+              <Link
+                to={item.path}
+                className={styles.menuLink(isCurrentPath(item, location))}
+                onClick={handleToggle}
+              >
+                {item.korean}
+              </Link>
+            </li>
+          ))}
+          <li className="px-4 py-3">
+            <Link to="/showcase" onClick={handleToggle}>
+              <button className={styles.button.mobile}>
+                체험하기
+                <svg
+                  fill="none"
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  className="w-4 h-4"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M5 12h14M12 5l7 7-7 7"></path>
+                </svg>
+              </button>
+            </Link>
+          </li>
         </ul>
       </nav>
     </header>
