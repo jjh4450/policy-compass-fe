@@ -13,7 +13,7 @@
       "@/*": ["src/*"],
       "@shared/*": ["src/shared/*"],
       "@styles/*": ["src/shared/styles/*"],
-      "@types/*": ["src/shared/types/*"],
+      "@types_/*": ["src/shared/types/*"],
       "@utils/*": ["src/shared/utils/*"]
     },
 
