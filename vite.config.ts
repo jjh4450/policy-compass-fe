@@ -23,21 +23,20 @@
 
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
-import { vanillaExtractPlugin } from "@vanilla-extract/vite-plugin";
 import svgr from "vite-plugin-svgr";
 import { imagetools } from "vite-imagetools";
 import compression from "vite-plugin-compression2";
 import path from "path";
 import tsconfigPaths from "vite-tsconfig-paths";
+import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
   plugins: [
     react(),
-    vanillaExtractPlugin(),
+    tailwindcss(),
     compression({
       include: /\.(js|css|html|svg)$/, // Specify file extensions for compression
       threshold: 1400, // Only compress files larger than 1.4KB
-      algorithm: "brotliCompress",
     }),
     svgr({
       svgrOptions: {
