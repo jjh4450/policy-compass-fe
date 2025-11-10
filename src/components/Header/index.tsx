@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import routerInfo from "@/shared/routing/routerInfo.ts";
 import { routerInfoType } from "@/shared/types/routing.ts";
@@ -14,14 +14,10 @@ import clsx from "clsx";
  * @returns {React.ReactElement} Header 컴포넌트 요소
  */
 const Header: React.FC = () => {
-  const [isActive, toggleActive] = useToggle(false);
+  const [isActive, handleToggle] = useToggle(false);
   const location = useLocation();
   const headerRef = useRef<HTMLDivElement>(null);
   const isDesktop = useMediaQuery("(min-width: 1000px)");
-
-  const handleToggle = useCallback(() => {
-    toggleActive();
-  }, [toggleActive]);
 
   /**
    * 데스크탑에서 페이지 이동 시 메뉴 닫기
@@ -199,4 +195,4 @@ const Header: React.FC = () => {
   );
 };
 
-export default React.memo(Header);
+export default Header;

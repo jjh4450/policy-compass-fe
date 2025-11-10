@@ -36,7 +36,6 @@ export function Loading() {
     return () => clearInterval(dotInterval);
   }, []);
 
-  // 스타일 클래스 상수
   const styles = {
     container: clsx(
       "flex flex-col items-center justify-center min-h-screen",
