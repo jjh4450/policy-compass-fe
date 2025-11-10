@@ -1,15 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
-
-/**
- * 메뉴 버튼의 토글 상태를 관리하는 커스텀 훅
- * @param initialState
- * @returns [state, toggle]
- */
-export const useToggle = (initialState = false) => {
-  const [state, setState] = useState(initialState);
-  const toggle = useCallback(() => setState((state) => !state), []);
-  return [state, toggle] as const;
-};
+import { useEffect, useState } from "react";
 
 /**
  * 미디어 쿼리를 사용하는 커스텀 훅

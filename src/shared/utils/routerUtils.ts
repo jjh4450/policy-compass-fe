@@ -1,7 +1,7 @@
 import { Location, matchPath, useLocation } from "react-router-dom";
 import { routerInfoType } from "../types/routing.ts";
-import routerInfo from "@/shared/routing/routerInfo.ts";
-import { useEffect, useState } from "react";
+import routerInfo from "@shared/routing/routerInfo.ts";
+import { useMemo } from "react";
 
 /**
  * 현재 경로인지 비교하는 함수
@@ -30,14 +30,10 @@ export const useCurrentPage = (): routerInfoType => {
    * For inquiries, contact: jjh4450git@gmail.com
    *******************************************/
   const location = useLocation();
-  const [currentPage, setCurrentPage] = useState(nullPage);
 
-  useEffect(() => {
-    const currentRoute = routerInfo.find((route) =>
-      isCurrentPath(route, location),
+  return useMemo(() => {
+    return (
+      routerInfo.find((route) => isCurrentPath(route, location)) ?? nullPage
     );
-    setCurrentPage(currentRoute ?? nullPage);
-  }, [nullPage, location]);
-
-  return currentPage;
+  }, [location, nullPage]);
 };
