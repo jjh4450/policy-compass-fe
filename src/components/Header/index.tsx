@@ -7,6 +7,7 @@ import { useToggle } from "@utils/useToggle.ts";
 import { useMediaQuery } from "@utils/useMediaQuery.ts";
 import { useOnClickOutside } from "@utils/useOnClickOutside.ts";
 import clsx from "clsx";
+import { useAuth } from "react-oidc-context";
 
 /**
  * Header 컴포넌트 (개선된 Tailwind CSS 버전)
@@ -15,6 +16,7 @@ import clsx from "clsx";
  */
 const Header: React.FC = () => {
   const [isActive, handleToggle] = useToggle(false);
+  const auth = useAuth();
   const location = useLocation();
   const headerRef = useRef<HTMLDivElement>(null);
   const isDesktop = useMediaQuery("(min-width: 1000px)");
@@ -109,22 +111,25 @@ const Header: React.FC = () => {
         </nav>
 
         {/* 데스크탑 버튼 */}
-        <Link to="/showcase">
-          <button className={styles.button.desktop}>
-            로그인
-            <svg
-              fill="none"
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              className="w-4 h-4"
-              viewBox="0 0 24 24"
-            >
-              <path d="M5 12h14M12 5l7 7-7 7"></path>
-            </svg>
-          </button>
-        </Link>
+        <button className={styles.button.desktop}>
+          로그인
+          <svg
+            fill="none"
+            stroke="currentColor"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            className="w-4 h-4"
+            viewBox="0 0 24 24"
+            onClick={() =>
+              auth.signinRedirect({
+                state: { from: location.pathname + location.search }, // 현재 경로 저장
+              })
+            }
+          >
+            <path d="M5 12h14M12 5l7 7-7 7"></path>
+          </svg>
+        </button>
 
         {/* 모바일 햄버거 메뉴 버튼 */}
         <button
@@ -172,22 +177,27 @@ const Header: React.FC = () => {
             </li>
           ))}
           <li className="px-4 py-3">
-            <Link to="/showcase" onClick={handleToggle}>
-              <button className={styles.button.mobile}>
-                체험하기
-                <svg
-                  fill="none"
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  className="w-4 h-4"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M5 12h14M12 5l7 7-7 7"></path>
-                </svg>
-              </button>
-            </Link>
+            <button
+              className={styles.button.mobile}
+              onClick={() =>
+                auth.signinRedirect({
+                  state: { from: location.pathname + location.search }, // 현재 경로 저장
+                })
+              }
+            >
+              로그인
+              <svg
+                fill="none"
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                className="w-4 h-4"
+                viewBox="0 0 24 24"
+              >
+                <path d="M5 12h14M12 5l7 7-7 7"></path>
+              </svg>
+            </button>
           </li>
         </ul>
       </nav>
