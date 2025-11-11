@@ -7,6 +7,10 @@ export const routerInfo: routerInfoType[] = [
     korean: "메인",
     expose: true,
   },
+  {
+    path: "callback",
+    element: import("@/pages/OidcCallback.tsx"),
+  },
 ];
 
 export default routerInfo;
