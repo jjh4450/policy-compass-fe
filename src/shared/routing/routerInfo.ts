@@ -8,6 +8,13 @@ export const routerInfo: routerInfoType[] = [
     expose: true,
   },
   {
+    path: "/mypage",
+    element: import("@/pages/MyPage"),
+    korean: "마이페이지-test",
+    expose: true,
+    isProtected: true,
+  },
+  {
     path: "callback",
     element: import("@/pages/OidcCallback.tsx"),
   },

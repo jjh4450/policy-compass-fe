@@ -123,7 +123,7 @@ const Header: React.FC = () => {
             viewBox="0 0 24 24"
             onClick={() =>
               auth.signinRedirect({
-                state: { from: location.pathname + location.search }, // 현재 경로 저장
+                state: { from: location.pathname + location.search },
               })
             }
           >
