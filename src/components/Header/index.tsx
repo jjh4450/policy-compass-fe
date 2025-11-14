@@ -128,7 +128,7 @@ const Header: React.FC = () => {
         {/* 데스크탑 버튼 */}
         <Button
           className="hidden lg:inline-flex" // 반응형 클래스는 className으로 전달
-          variant="primary"
+          size="slim"
           label="로그인"
           icon={LoginIcon}
           iconPosition="right"
