@@ -61,7 +61,7 @@ export interface ButtonProps
     VariantProps<typeof buttonVariants> {
   asChild?: boolean;
   label?: string;
-  icon?: React.ReactElement;
+  icon?: React.ReactElement<{ className?: string }>;
   iconPosition?: "left" | "right";
   loading?: boolean;
 }
@@ -100,10 +100,12 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           <>
             {icon &&
               iconPosition === "left" &&
+              React.isValidElement(icon) &&
               React.cloneElement(icon, { className: "shrink-0" })}
             {content}
             {icon &&
               iconPosition === "right" &&
+              React.isValidElement(icon) &&
               React.cloneElement(icon, { className: "shrink-0" })}
           </>
         )}
