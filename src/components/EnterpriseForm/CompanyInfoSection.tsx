@@ -21,8 +21,9 @@ import {
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronDownIcon } from "lucide-react";
-import { useEnterpriseStore, type CompanySize } from "@/stores/enterpriseStore";
-import { COMPANY_SIZES } from "./types";
+import { useEnterpriseStore } from "@/stores/enterpriseStore";
+import type { CompanySize } from "@/shared/types/enterprise";
+import { COMPANY_SIZES } from "@/shared/constants/enterprise";
 import { collapsibleStyles } from "./styles";
 
 /**

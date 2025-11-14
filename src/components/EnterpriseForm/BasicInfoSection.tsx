@@ -8,7 +8,7 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { useEnterpriseStore } from "@/stores/enterpriseStore";
-import { formatBizRegNo } from "./utils";
+import { formatBizRegNo } from "@/shared/utils/formUtils";
 
 /**
  * 기본 정보 섹션 컴포넌트

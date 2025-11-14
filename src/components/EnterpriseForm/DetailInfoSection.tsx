@@ -22,9 +22,9 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronDownIcon } from "lucide-react";
 import { useEnterpriseStore } from "@/stores/enterpriseStore";
-import { REGIONS, SECTORS } from "./constants";
+import { REGIONS, SECTORS } from "@/shared/constants/enterprise";
 import { collapsibleStyles } from "./styles";
-import { parseIntegerInput, parseNumericInput } from "./utils";
+import { parseIntegerInput, parseNumericInput } from "@/shared/utils/formUtils";
 
 /**
  * 상세 정보 섹션 컴포넌트

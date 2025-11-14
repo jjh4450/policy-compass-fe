@@ -1,17 +1,5 @@
 import { create } from "zustand";
-
-export type CompanySize = "소기업" | "중기업" | "대기업";
-
-export interface EnterpriseFormData {
-  name: string;
-  bizRegNo: string;
-  companySize: CompanySize | "";
-  regionId: number | null;
-  sectorCode: string;
-  establishedDate: string;
-  employeesCount: number | null;
-  revenueAmount: number | null;
-}
+import type { EnterpriseFormData } from "@/shared/types/enterprise";
 
 interface EnterpriseStore {
   formData: EnterpriseFormData;
