@@ -8,6 +8,21 @@ import { useMediaQuery } from "@utils/useMediaQuery.ts";
 import { useOnClickOutside } from "@utils/useOnClickOutside.ts";
 import clsx from "clsx";
 import { useAuth } from "react-oidc-context";
+import { Button } from "@/components/ui/button.tsx";
+
+const LoginIcon = (
+  <svg
+    fill="none"
+    stroke="currentColor"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth="2"
+    className="w-4 h-4"
+    viewBox="0 0 24 24"
+  >
+    <path d="M5 12h14M12 5l7 7-7 7"></path>
+  </svg>
+);
 
 /**
  * Header 컴포넌트 (개선된 Tailwind CSS 버전)
@@ -111,25 +126,18 @@ const Header: React.FC = () => {
         </nav>
 
         {/* 데스크탑 버튼 */}
-        <button className={styles.button.desktop}>
-          로그인
-          <svg
-            fill="none"
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            className="w-4 h-4"
-            viewBox="0 0 24 24"
-            onClick={() =>
-              auth.signinRedirect({
-                state: { from: location.pathname + location.search },
-              })
-            }
-          >
-            <path d="M5 12h14M12 5l7 7-7 7"></path>
-          </svg>
-        </button>
+        <Button
+          className="hidden lg:inline-flex" // 반응형 클래스는 className으로 전달
+          variant="primary"
+          label="로그인"
+          icon={LoginIcon}
+          iconPosition="right"
+          onClick={() =>
+            auth.signinRedirect({
+              state: { from: location.pathname + location.search },
+            })
+          }
+        />
 
         {/* 모바일 햄버거 메뉴 버튼 */}
         <button
@@ -177,27 +185,18 @@ const Header: React.FC = () => {
             </li>
           ))}
           <li className="px-4 py-3">
-            <button
-              className={styles.button.mobile}
+            <Button
+              fullWidth={true}
+              variant="primary"
+              label="로그인"
+              icon={LoginIcon}
+              iconPosition="right"
               onClick={() =>
                 auth.signinRedirect({
-                  state: { from: location.pathname + location.search }, // 현재 경로 저장
+                  state: { from: location.pathname + location.search },
                 })
               }
-            >
-              로그인
-              <svg
-                fill="none"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                className="w-4 h-4"
-                viewBox="0 0 24 24"
-              >
-                <path d="M5 12h14M12 5l7 7-7 7"></path>
-              </svg>
-            </button>
+            />
           </li>
         </ul>
       </nav>
