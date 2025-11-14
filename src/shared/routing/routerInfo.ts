@@ -15,6 +15,17 @@ export const routerInfo: routerInfoType[] = [
     isProtected: true,
   },
   {
+    path: "/support-project",
+    element: import("@/pages/SupportProjectList"),
+    korean: "지원사업 목록",
+    expose: true,
+  },
+  {
+    path: "/support-project/detail",
+    element: import("@/pages/SupportProjectDetail"),
+    expose: false,
+  },
+  {
     path: "callback",
     element: import("@/pages/OidcCallback.tsx"),
   },
