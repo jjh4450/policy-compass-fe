@@ -21,6 +21,12 @@ export const routerInfo: routerInfoType[] = [
     expose: true,
   },
   {
+    path: "/search",
+    element: import("@/pages/Search"),
+    korean: "검색",
+    expose: true,
+  },
+  {
     path: "/support-project/detail",
     element: import("@/pages/SupportProjectDetail"),
     expose: false,

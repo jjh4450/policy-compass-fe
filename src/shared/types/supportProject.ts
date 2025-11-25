@@ -3,15 +3,15 @@
  */
 
 /**
- * 지원사업 신청 상태
+ * 정부지원사업 신청 상태
  */
 export type ApplicationStatus = "모집예정" | "모집중" | "마감" | "종료";
 
 /**
- * 정부지원사업 정보 인터페이스
+ * 정책/정부지원사업 상세 정보
  */
 export interface SupportProject {
-  tblkey: number;
+  id: string;
   projectName: string;
   organization: string;
   applicationStartDate: string | null;
@@ -19,7 +19,7 @@ export interface SupportProject {
   projectStartDate: string | null;
   projectEndDate: string | null;
   applicationStatus: ApplicationStatus | null;
-  fieldCode: string | null;
+  projectField: string | null;
   description: string | null;
   applicationUrl: string | null;
   budgetAmount: number | null;
@@ -27,10 +27,10 @@ export interface SupportProject {
 }
 
 /**
- * 정부지원사업 목록 아이템 (요약 정보)
+ * 정부지원사업 목록 요약 정보
  */
 export interface SupportProjectListItem {
-  tblkey: number;
+  id: string;
   projectName: string;
   organization: string;
   applicationStatus: ApplicationStatus | null;

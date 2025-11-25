@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useCognitoLogout } from "@utils/cognito.ts";
 import { useEnterpriseStore } from "@/stores/enterpriseStore";
 import { Button } from "@/components/ui/button";
@@ -7,6 +8,8 @@ import { cn } from "@/lib/utils";
 import { formatDate, formatCurrencyWithUnit } from "@/shared/utils/dateUtils";
 import { formatBizRegNo } from "@/shared/utils/formUtils";
 import { REGIONS, SECTORS } from "@/shared/constants/enterprise";
+import { fetchCompany } from "@/shared/api/companyApi";
+import { companyToEnterpriseForm } from "@/shared/utils/companyMapper";
 import { LogOutIcon } from "lucide-react";
 
 /**
@@ -19,8 +22,47 @@ import { LogOutIcon } from "lucide-react";
 export default function MyPage() {
   const { logout } = useCognitoLogout();
   const formData = useEnterpriseStore((state) => state.formData);
+  const companyId = useEnterpriseStore((state) => state.companyId);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const setFormData = useEnterpriseStore((state) => state.setFormData);
+  const setCompanyId = useEnterpriseStore((state) => state.setCompanyId);
 
-  // 데이터가 비어있는지 확인
+  useEffect(() => {
+    if (!companyId) {
+      setError(null);
+      return;
+    }
+
+    let isMounted = true;
+    const loadCompany = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const company = await fetchCompany(companyId);
+        if (isMounted) {
+          setFormData(companyToEnterpriseForm(company));
+          setCompanyId(company.id);
+        }
+      } catch (err) {
+        console.error("회사 정보 조회 실패:", err);
+        if (isMounted) {
+          setError("회사 정보를 불러오지 못했습니다.");
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    loadCompany();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [companyId, setFormData, setCompanyId]);
+
   const hasData = formData.name !== "";
 
   return (
@@ -41,8 +83,31 @@ export default function MyPage() {
 
       <Separator />
 
+      {!companyId && (
+        <div className={cn("rounded-lg border bg-card p-6 text-center")}>
+          <p className={cn("text-muted-foreground text-sm")}>
+            등록된 회사 정보가 없습니다. 메인 페이지에서 회사 정보를
+            입력해주세요.
+          </p>
+        </div>
+      )}
+
+      {isLoading && (
+        <div className={cn("rounded-lg border bg-card p-6 text-center")}>
+          <p className={cn("text-muted-foreground")}>
+            회사 정보를 불러오는 중입니다...
+          </p>
+        </div>
+      )}
+
+      {error && !isLoading && (
+        <div className={cn("rounded-lg border bg-card p-6 text-center")}>
+          <p className={cn("text-destructive text-sm font-medium")}>{error}</p>
+        </div>
+      )}
+
       {/* 회사 정보 카드 */}
-      {hasData ? (
+      {!isLoading && !error && hasData ? (
         <div
           className={cn(
             "w-full rounded-lg border bg-card p-6 shadow-sm",

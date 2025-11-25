@@ -15,13 +15,13 @@ import { formatDate, formatCurrencyWithUnit } from "@/shared/utils/dateUtils";
  * 정부지원사업 목록을 테이블 형태로 표시합니다.
  * Badge를 사용하여 신청 상태를 시각적으로 구분합니다.
  * 반응형 디자인을 지원합니다.
- * onItemClick이 제공되지 않으면 기본적으로 /support-project/detail?id={tblkey}로 이동합니다.
+ * onItemClick이 제공되지 않으면 기본적으로 /support-project/detail?id={id}로 이동합니다.
  *
  * @example
  * ```tsx
  * <SupportProjectList
  *   projects={projectList}
- *   onItemClick={(project) => navigate(`/projects/${project.tblkey}`)}
+ *   onItemClick={(project) => navigate(`/projects/${project.id}`)}
  * />
  * ```
  */
@@ -39,7 +39,7 @@ export function SupportProjectList({
       onItemClick(project);
     } else {
       // 기본 동작: useSearchParams를 사용하여 상세 페이지로 이동
-      navigate(`/support-project/detail?id=${project.tblkey}`);
+      navigate(`/support-project/detail?id=${project.id}`);
     }
   };
   if (projects.length === 0) {
@@ -73,7 +73,7 @@ export function SupportProjectList({
         <tbody>
           {projects.map((project) => (
             <TableRow
-              key={project.tblkey}
+              key={project.id}
               project={project}
               onClick={handleItemClick}
             />

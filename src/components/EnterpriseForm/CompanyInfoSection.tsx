@@ -74,7 +74,7 @@ export function CompanyInfoSection() {
                   </SelectContent>
                 </Select>
                 <FieldDescription>
-                  소기업, 중기업, 대기업 중 선택하세요
+                  중소기업, 중견기업, 대기업 중 선택하세요
                 </FieldDescription>
               </FieldContent>
             </Field>

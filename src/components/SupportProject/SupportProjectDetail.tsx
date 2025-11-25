@@ -74,8 +74,8 @@ export function SupportProjectDetail({ project }: { project: SupportProject }) {
           label="예산 규모"
           value={formatCurrencyWithUnit(project.budgetAmount)}
         />
-        {project.fieldCode && (
-          <DetailItem label="분야 코드" value={project.fieldCode} />
+        {project.projectField && (
+          <DetailItem label="분야" value={project.projectField} />
         )}
       </div>
 

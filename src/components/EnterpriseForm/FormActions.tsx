@@ -10,12 +10,18 @@ import { useEnterpriseStore } from "@/stores/enterpriseStore";
  * 저장 및 초기화 버튼을 제공합니다.
  * 저장 버튼은 더 넓게, 초기화 버튼은 적절한 너비로 설정됩니다.
  */
-export function FormActions() {
+export function FormActions({ isSubmitting }: { isSubmitting?: boolean }) {
   const resetFormData = useEnterpriseStore((state) => state.resetFormData);
 
   return (
     <FieldGroup className={cn("mt-6 flex-row gap-4")}>
-      <Button type="submit" variant="primary" className="flex-1">
+      <Button
+        type="submit"
+        variant="primary"
+        className="flex-1"
+        loading={isSubmitting}
+        disabled={isSubmitting}
+      >
         저장
       </Button>
       <Button
@@ -23,6 +29,7 @@ export function FormActions() {
         variant="outline"
         onClick={resetFormData}
         className="w-32 shrink-0"
+        disabled={isSubmitting}
       >
         초기화
       </Button>

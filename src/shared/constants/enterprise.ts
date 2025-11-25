@@ -1,3 +1,5 @@
+import type { CompanySize } from "@/shared/types/enterprise";
+
 /**
  * Enterprise 관련 상수 데이터
  *
@@ -54,6 +56,4 @@ export const SECTORS = [
 /**
  * 기업 규모 옵션 목록
  */
-import { type CompanySize } from "@/shared/types/enterprise";
-
-export const COMPANY_SIZES: CompanySize[] = ["소기업", "중기업", "대기업"];
+export const COMPANY_SIZES: CompanySize[] = ["중소기업", "중견기업", "대기업"];

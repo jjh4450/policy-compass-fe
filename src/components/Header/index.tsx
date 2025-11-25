@@ -10,6 +10,8 @@ import { useCognitoLogout } from "@utils/cognito.ts";
 import clsx from "clsx";
 import { useAuth } from "react-oidc-context";
 import { Button } from "@/components/ui/button.tsx";
+import { useEnterpriseStore } from "@/stores/enterpriseStore";
+import { Badge } from "@/components/ui/badge";
 
 const LoginIcon = (
   <svg
@@ -37,6 +39,9 @@ const Header: React.FC = () => {
   const headerRef = useRef<HTMLDivElement>(null);
   const isDesktop = useMediaQuery("(min-width: 1000px)");
   const { logout } = useCognitoLogout();
+  const formData = useEnterpriseStore((state) => state.formData);
+  const companyId = useEnterpriseStore((state) => state.companyId);
+  const companyInfoComplete = !!companyId && !!formData.name;
 
   /**
    * 데스크탑에서 페이지 이동 시 메뉴 닫기
@@ -131,6 +136,12 @@ const Header: React.FC = () => {
               </li>
             ))}
           </ul>
+          <Badge
+            variant={companyInfoComplete ? "default" : "outline"}
+            className="ml-4 hidden lg:inline-flex"
+          >
+            {companyInfoComplete ? "기업 정보 입력 완료" : "기업 정보 미입력"}
+          </Badge>
         </nav>
 
         {/* 데스크탑 버튼 */}
@@ -224,6 +235,14 @@ const Header: React.FC = () => {
                 }
               />
             )}
+          </li>
+          <li className="px-4 py-2 w-full">
+            <Badge
+              variant={companyInfoComplete ? "default" : "outline"}
+              className="w-full justify-center"
+            >
+              {companyInfoComplete ? "기업 정보 입력 완료" : "기업 정보 미입력"}
+            </Badge>
           </li>
         </ul>
       </nav>

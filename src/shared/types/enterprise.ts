@@ -5,7 +5,7 @@
 /**
  * 기업 규모 타입
  */
-export type CompanySize = "소기업" | "중기업" | "대기업";
+export type CompanySize = "중소기업" | "중견기업" | "대기업";
 
 /**
  * Enterprise 폼 데이터 인터페이스
