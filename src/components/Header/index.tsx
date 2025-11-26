@@ -6,9 +6,12 @@ import { isCurrentPath } from "@utils/routerUtils.ts";
 import { useToggle } from "@utils/useToggle.ts";
 import { useMediaQuery } from "@utils/useMediaQuery.ts";
 import { useOnClickOutside } from "@utils/useOnClickOutside.ts";
+import { useCognitoLogout } from "@utils/cognito.ts";
 import clsx from "clsx";
 import { useAuth } from "react-oidc-context";
 import { Button } from "@/components/ui/button.tsx";
+import { useEnterpriseStore } from "@/stores/enterpriseStore";
+import { Badge } from "@/components/ui/badge";
 
 const LoginIcon = (
   <svg
@@ -35,6 +38,10 @@ const Header: React.FC = () => {
   const location = useLocation();
   const headerRef = useRef<HTMLDivElement>(null);
   const isDesktop = useMediaQuery("(min-width: 1000px)");
+  const { logout } = useCognitoLogout();
+  const formData = useEnterpriseStore((state) => state.formData);
+  const companyId = useEnterpriseStore((state) => state.companyId);
+  const companyInfoComplete = !!companyId && !!formData.name;
 
   /**
    * 데스크탑에서 페이지 이동 시 메뉴 닫기
@@ -95,8 +102,14 @@ const Header: React.FC = () => {
       "lg:hidden p-2 text-gray-700 hover:text-indigo-600 focus:outline-none transition-colors",
   };
 
+  // 인증 상태에 따라 노출할 라우트 필터링
   const sortedRoutes = routerInfo
-    .filter((item: routerInfoType) => item.expose)
+    .filter((item: routerInfoType) => {
+      if (!item.expose) return false;
+      // isProtected가 true인 경우 인증된 사용자만 표시
+      if (item.isProtected && !auth.isAuthenticated) return false;
+      return true;
+    })
     .sort((a: routerInfoType, b: routerInfoType) =>
       a.korean!.localeCompare(b.korean!),
     );
@@ -123,21 +136,37 @@ const Header: React.FC = () => {
               </li>
             ))}
           </ul>
+          <Badge
+            variant={companyInfoComplete ? "default" : "outline"}
+            className="ml-4 hidden lg:inline-flex"
+          >
+            {companyInfoComplete ? "기업 정보 입력 완료" : "기업 정보 미입력"}
+          </Badge>
         </nav>
 
         {/* 데스크탑 버튼 */}
-        <Button
-          className="hidden lg:inline-flex" // 반응형 클래스는 className으로 전달
-          variant="primary"
-          label="로그인"
-          icon={LoginIcon}
-          iconPosition="right"
-          onClick={() =>
-            auth.signinRedirect({
-              state: { from: location.pathname + location.search },
-            })
-          }
-        />
+        {auth.isAuthenticated ? (
+          <Button
+            className="hidden lg:inline-flex"
+            size="slim"
+            variant="outline"
+            label="로그아웃"
+            onClick={logout}
+          />
+        ) : (
+          <Button
+            className="hidden lg:inline-flex"
+            size="slim"
+            label="로그인"
+            icon={LoginIcon}
+            iconPosition="right"
+            onClick={() =>
+              auth.signinRedirect({
+                state: { from: location.pathname + location.search },
+              })
+            }
+          />
+        )}
 
         {/* 모바일 햄버거 메뉴 버튼 */}
         <button
@@ -185,18 +214,35 @@ const Header: React.FC = () => {
             </li>
           ))}
           <li className="px-4 py-3">
-            <Button
-              fullWidth={true}
-              variant="primary"
-              label="로그인"
-              icon={LoginIcon}
-              iconPosition="right"
-              onClick={() =>
-                auth.signinRedirect({
-                  state: { from: location.pathname + location.search },
-                })
-              }
-            />
+            {auth.isAuthenticated ? (
+              <Button
+                fullWidth={true}
+                variant="outline"
+                label="로그아웃"
+                onClick={logout}
+              />
+            ) : (
+              <Button
+                fullWidth={true}
+                variant="primary"
+                label="로그인"
+                icon={LoginIcon}
+                iconPosition="right"
+                onClick={() =>
+                  auth.signinRedirect({
+                    state: { from: location.pathname + location.search },
+                  })
+                }
+              />
+            )}
+          </li>
+          <li className="px-4 py-2 w-full">
+            <Badge
+              variant={companyInfoComplete ? "default" : "outline"}
+              className="w-full justify-center"
+            >
+              {companyInfoComplete ? "기업 정보 입력 완료" : "기업 정보 미입력"}
+            </Badge>
           </li>
         </ul>
       </nav>
